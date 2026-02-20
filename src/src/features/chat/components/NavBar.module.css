@@ -1,0 +1,58 @@
+nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: rgb(15, 15, 15);
+	padding: 10px 30px;
+	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+	margin: 20px;
+	border-radius: 100px;
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	left: 10rem;
+	right: 10rem;
+}
+
+.logo {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/*for the logo the width:height ratio is 1.49:1*/
+img {
+	height: 4rem;
+	width: 4rem;
+	vertical-align: middle;
+	background-color: white;
+	padding: 2px;
+	border-radius: 50px;
+}
+
+img:hover {
+	transform: rotate(45deg);
+}
+
+.navlist {
+	display: flex;
+	list-style: none;
+}
+
+.navlist li {
+	margin: 0 15px;
+	color: white;
+	font-family: "Oswald", sans-serif;
+	font-size: 24px;
+	box-sizing: margin-box;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+	display: inline-block;
+	transition: transform 0.5s ease;
+}
+
+a:hover {
+	transform: rotate(180deg);
+}
