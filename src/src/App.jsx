@@ -6,11 +6,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ChatWindow from "./features/chat/pages/ChatWindow";
 import HomePage from "./pages/HomePage";
+import LoginPage from "./features/authentication/pages/LoginPage";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		Component: HomePage,
+		children: [
+			{ index: true, Component: HomePage },
+			{ path: "login", Component: LoginPage },
+		],
 	},
 ]);
 

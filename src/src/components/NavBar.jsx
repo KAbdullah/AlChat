@@ -3,7 +3,7 @@ import styles from "./NavBar.module.css";
 function NavBar() {
 	return (
 		<nav>
-			<a className={styles.logo} href="#">
+			<a className={styles.logo} href="/">
 				<img src="/images/AlChatLogo2.png" alt="Website Logo" />
 			</a>
 
@@ -15,7 +15,7 @@ function NavBar() {
 					<a href="#winner">Sign Up</a>
 				</li>
 				<li className={styles.login}>
-					<a href="#bum">Login</a>
+					<a href="/login">Login</a>
 				</li>
 			</ul>
 		</nav>
