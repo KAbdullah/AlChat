@@ -1,0 +1,52 @@
+.innerDiv {
+	margin: 20rem 15rem;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+form {
+	display: grid;
+	grid-template-rows: 5rem 5rem 5rem 7rem;
+	justify-items: center;
+	align-items: center;
+	background-color: #ffff;
+}
+
+.inputWrapper {
+	position: relative;
+	width: 50%;
+	height: 2rem;
+}
+
+.icons {
+	position: absolute;
+	left: 10px;
+	top: 48%;
+	width: 2rem;
+	height: 2rem;
+}
+
+.email,
+.password {
+	width: 100%;
+	height: 2rem;
+	/* max-width: 350px; */
+	padding: 10px;
+	padding-left: 4rem;
+	font-size: 16px;
+	border-radius: 10px;
+	border-style: none;
+	background-color: #f0edff;
+}
+
+::placeholder {
+	color: #1c1c1c;
+}
+
+.button {
+	width: 150px;
+	padding: 10px;
+	border: none;
+	background-color: #9181f4;
+	border-radius: 10px;
+}

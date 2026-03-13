@@ -4,7 +4,11 @@ function NavBar() {
 	return (
 		<nav>
 			<a className={styles.logo} href="/">
-				<img src="/images/AlChatLogo2.png" alt="Website Logo" />
+				<img
+					className={styles.logoImg}
+					src="/images/AlChatLogo2.png"
+					alt="Website Logo"
+				/>
 			</a>
 
 			<ul className={styles.navlist}>
