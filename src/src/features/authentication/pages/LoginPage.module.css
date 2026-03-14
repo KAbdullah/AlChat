@@ -16,6 +16,7 @@ form {
 	position: relative;
 	width: 50%;
 	height: 2rem;
+	z-index: 1;
 }
 
 .icons {

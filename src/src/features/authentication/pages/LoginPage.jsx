@@ -7,6 +7,7 @@ function LoginPage() {
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
+		console.log(e);
 	};
 
 	return (
