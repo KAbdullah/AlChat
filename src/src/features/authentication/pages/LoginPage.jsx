@@ -1,27 +1,30 @@
 import { useState } from "react";
 import styles from "./LoginPage.module.css";
 import getUser from "../services/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [submitted, setSubmitted] = useState(false);
 
-	const { isPending, isError, data, error, refetch } = useQuery({
+	const mutation = useMutation({
 		queryKey: ["auth", email, password],
-		queryFn: () => getUser(email, password),
-		enabled: false,
-		staleTime: Infinity,
+		mutationFn: () => getUser(email, password),
 	});
 
 	//So we have our function over here that handlesFormSubmit
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		refetch();
+		mutation.mutate();
 	};
 
-	if (isError) {
-		alert("error");
+	if (mutation.isSuccess) {
+		console.log(mutation.data);
+	}
+
+	if (mutation.isError) {
+		return alert(mutation.error);
 	}
 
 	return (
