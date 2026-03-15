@@ -4,10 +4,12 @@ import { router as messageRouter } from "./routes/messageRoutes.js";
 import { router as userRouter } from "./routes/userRoutes.js";
 import { router as conversationRouter } from "./routes/coversationRoutes.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 const httpServer = createServer(app);
 
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(cookieParser());
 

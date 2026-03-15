@@ -16,7 +16,6 @@ form {
 	position: relative;
 	width: 50%;
 	height: 2rem;
-	z-index: 1;
 }
 
 .icons {
@@ -50,4 +49,9 @@ form {
 	border: none;
 	background-color: #9181f4;
 	border-radius: 10px;
+}
+
+.button:hover {
+	background-color: #7068a5;
+	color: white;
 }

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import styles from "./LoginPage.module.css";
+import getUser from "../services/auth";
 
 function LoginPage() {
 	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState();
+	const [password, setPassword] = useState("");
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		console.log(e);
+		getUser(email, password);
 	};
 
 	return (
@@ -29,7 +30,7 @@ function LoginPage() {
 							placeholder="Email"
 							className={styles.email}
 							onChange={(e) => setEmail(e.target.value)}
-							requireds
+							required
 						/>
 					</div>
 
@@ -40,6 +41,7 @@ function LoginPage() {
 							type="password"
 							name="password"
 							id="password"
+							value={password}
 							placeholder="Password"
 							className={styles.password}
 							onChange={(e) => setPassword(e.target.value)}

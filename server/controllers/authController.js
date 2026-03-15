@@ -47,13 +47,13 @@ export const login = async (req, res, next) => {
 		return next(new Error("Email or Password is missing"));
 	}
 
-	const user = await User.findOne({ emailAddress });
+	const user = await User.findOne({ emailAddress }).select("+password");
 
 	if (!user || !(await user.checkPassword(password, user.password))) {
-		return next(new Error("User doesn't exist or password is incorrect!"));
+		return next(new Error("Invalid email or password!"));
 	}
 
-	createSendToken(user, 201, req, res);
+	createSendToken(user, 200, req, res);
 };
 
 export const protect = async (req, res, next) => {
