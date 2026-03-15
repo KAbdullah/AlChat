@@ -2,30 +2,29 @@ import { useState } from "react";
 import styles from "./LoginPage.module.css";
 import getUser from "../services/auth";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
 function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [submitted, setSubmitted] = useState(false);
 
+	let navigate = useNavigate();
+
 	const mutation = useMutation({
-		queryKey: ["auth", email, password],
-		mutationFn: () => getUser(email, password),
+		mutationFn: ({ email, password }) => getUser(email, password),
+
+		onSuccess: (data) => {
+			localStorage.setItem("userToken", data.token);
+			navigate("/app");
+		},
 	});
 
 	//So we have our function over here that handlesFormSubmit
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		mutation.mutate();
+		mutation.mutate({ email, password });
 	};
-
-	if (mutation.isSuccess) {
-		console.log(mutation.data);
-	}
-
-	if (mutation.isError) {
-		return alert(mutation.error);
-	}
 
 	return (
 		<div className={styles.loginpage}>
@@ -64,7 +63,7 @@ function LoginPage() {
 							required
 						/>
 					</div>
-
+					{mutation.isError && <div>Incorrect Email or Password</div>}
 					<input type="submit" value="Log In" className={styles.button} />
 				</form>
 				<div className={styles.picture}>
