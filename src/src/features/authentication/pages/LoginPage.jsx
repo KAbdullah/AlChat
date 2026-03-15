@@ -1,15 +1,28 @@
 import { useState } from "react";
 import styles from "./LoginPage.module.css";
 import getUser from "../services/auth";
+import { useQuery } from "@tanstack/react-query";
 
 function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
+	const { isPending, isError, data, error, refetch } = useQuery({
+		queryKey: ["auth", email, password],
+		queryFn: () => getUser(email, password),
+		enabled: false,
+		staleTime: Infinity,
+	});
+
+	//So we have our function over here that handlesFormSubmit
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		getUser(email, password);
+		refetch();
 	};
+
+	if (isError) {
+		alert("error");
+	}
 
 	return (
 		<div className={styles.loginpage}>

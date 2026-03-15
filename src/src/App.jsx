@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ChatWindow from "./features/chat/pages/ChatWindow";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./features/authentication/pages/LoginPage";
+import AppPage from "./pages/AppPage";
 
 const router = createBrowserRouter([
 	{
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
 			{ index: true, Component: HomePage },
 			{ path: "login", Component: LoginPage },
 		],
+	},
+	{
+		path: "/app",
+		Component: AppPage,
 	},
 ]);
 

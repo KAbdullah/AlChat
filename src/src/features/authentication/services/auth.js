@@ -1,7 +1,6 @@
 import axios from "axios";
 
 async function getUser(email, password) {
-	console.log(email, password);
 	try {
 		const response = await axios({
 			method: "post",
@@ -11,10 +10,9 @@ async function getUser(email, password) {
 				password: password,
 			},
 		});
-		console.log(response);
 		return response.data;
 	} catch (error) {
-		console.log(error);
+		throw error;
 	}
 }
 
