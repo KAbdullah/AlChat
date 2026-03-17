@@ -20,6 +20,7 @@ chatNameSpace.on("connection", (socket) => {
 			firstName: firstName,
 			lastName: lastName,
 		};
+		console.log(socket.user);
 	});
 
 	socket.on("join_room", (roomId) => {

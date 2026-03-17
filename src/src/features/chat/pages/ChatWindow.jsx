@@ -1,27 +1,25 @@
 import styles from "./ChatWindow.module.css";
 import { TbVideo, TbPhone, TbDotsVertical } from "react-icons/tb";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 
 const socket = io("http://localhost:3000/chat");
 
-socket.on("connect", () => {
-	const engine = socket.io.engine;
-	console.log(socket.id);
-	console.log(socket.connected);
-
-	// socket.emit("authenticate");
-});
-
 function ChatWindow() {
 	// Will have a use state hook here to update the messages array
 	const [windowMessages, setWindowMessages] = useState([]);
 
-	const { firstName, id } = useSelector((store) => store.user);
+	const { firstName, lastName, id } = useSelector((store) => store.user);
 
-	console.log(firstName);
-	console.log(id);
+	useEffect(() => {
+		socket.on("connect", () => {
+			console.log(socket.id);
+			console.log(socket.connected);
+		});
+
+		socket.emit("authenticate", { firstName, lastName, id });
+	}, [firstName, lastName, id]);
 
 	const sendMessages = () => {};
 
