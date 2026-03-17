@@ -12,26 +12,27 @@ const io = new Server(httpServer, {
 const chatNameSpace = io.of("/chat");
 
 chatNameSpace.on("connection", (socket) => {
-	console.log("A user connected");
+	console.log("A user connected", socket.id);
 
-	socket.on("authenticate", (user) => {
+	socket.on("authenticate", ({ firstName, lastName, id }) => {
 		socket.user = {
-			id: user.id,
-			name: user.name,
+			id: id,
+			firstName: firstName,
+			lastName: lastName,
 		};
 	});
 
 	socket.on("join_room", (roomId) => {
 		socket.join(roomId);
 		socket.in(roomId).emit("joined_user", {
-			username: socket.user?.name,
+			username: socket.user?.firstName,
 		});
 	});
 
 	socket.on("send_message", ({ roomId, message }) => {
 		socket.in(roomId).emit("receive_message", {
 			message,
-			username: socket.user?.name,
+			username: socket.user?.firstName,
 			roomId,
 		});
 	});

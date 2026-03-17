@@ -3,11 +3,13 @@ import styles from "./LoginPage.module.css";
 import getUser from "../services/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../../../userSlice";
 
 function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [submitted, setSubmitted] = useState(false);
+	const dispatch = useDispatch();
 
 	let navigate = useNavigate();
 
@@ -17,6 +19,14 @@ function LoginPage() {
 		onSuccess: (data) => {
 			localStorage.setItem("userToken", data.token);
 			navigate("/app");
+			dispatch(
+				setUserInfo({
+					firstName: data.data.user.firstName,
+					lastName: data.data.user.lastName,
+					emailAddres: data.data.user.emailAddress,
+					id: data.data.user._id,
+				}),
+			);
 		},
 	});
 

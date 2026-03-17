@@ -11,6 +11,10 @@ const conversationSchema = Schema(
 				required: [true, "A conversation must be between participants."],
 			},
 		],
+		roomId: {
+			type: "String",
+			required: [true, "A coversation needs to have a roomId"],
+		},
 	},
 	{
 		timestamps: true,
