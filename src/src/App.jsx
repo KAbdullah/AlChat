@@ -1,5 +1,4 @@
 import "./App.css";
-import cors from "cors";
 import io from "socket.io-client";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";

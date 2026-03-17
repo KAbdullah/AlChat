@@ -1,5 +1,12 @@
+import ChatWindow from "../features/chat/pages/ChatWindow";
+
 function AppPage() {
-	return <h1>Hello there.</h1>;
+	return (
+		<div>
+			<h1>Hello there.</h1>
+			<ChatWindow />
+		</div>
+	);
 }
 
 export default AppPage;
