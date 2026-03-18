@@ -17,16 +17,20 @@ function LoginPage() {
 		mutationFn: ({ email, password }) => getUser(email, password),
 
 		onSuccess: (data) => {
-			localStorage.setItem("userToken", data.token);
+			//Exposes cookie unnecessarily
+			// localStorage.setItem("userToken", data.token);
 			navigate("/app");
-			dispatch(
-				setUserInfo({
-					firstName: data.data.user.firstName,
-					lastName: data.data.user.lastName,
-					emailAddres: data.data.user.emailAddress,
-					id: data.data.user._id,
-				}),
-			);
+			//The backend gets the token with each request in the header,
+			//this unnecessarily exposes the cookie in the front-end to potential hackers
+			// dispatch(
+			// 	setUserInfo({
+			// 		firstName: data.data.user.firstName,
+			// 		lastName: data.data.user.lastName,
+			// 		emailAddres: data.data.user.emailAddress,
+			// 		id: data.data.user._id,
+			// 		token: data.token,
+			// 	}),
+			// );
 		},
 	});
 

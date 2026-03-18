@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 
-const socket = io("http://localhost:3000/chat");
+//withCredentials required to send cookies
+const socket = io("http://localhost:3000/chat", { withCredentials: true });
 
 function ChatWindow() {
 	// Will have a use state hook here to update the messages array

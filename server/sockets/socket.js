@@ -3,9 +3,9 @@ import { Server } from "socket.io";
 
 const io = new Server(httpServer, {
 	cors: {
-		origin: "*",
+		origin: "http://localhost:5173",
 		methods: "*",
-		connectionStateRecovery: {},
+		credentials: true, //required to send cookies
 	},
 });
 
