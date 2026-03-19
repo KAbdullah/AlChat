@@ -1,11 +1,10 @@
 import styles from "./ChatWindow.module.css";
 import { TbVideo, TbPhone, TbDotsVertical } from "react-icons/tb";
 import { useState, useEffect } from "react";
-import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
+import socket from "../../socket.jsx";
 
 //withCredentials required to send cookies
-const socket = io("http://localhost:3000/chat", { withCredentials: true });
 
 function ChatWindow() {
 	// Will have a use state hook here to update the messages array
@@ -14,12 +13,18 @@ function ChatWindow() {
 	const { firstName, lastName, id } = useSelector((store) => store.user);
 
 	useEffect(() => {
+		socket.connect();
 		socket.on("connect", () => {
 			console.log(socket.id);
 			console.log(socket.connected);
-		});
 
-		socket.emit("authenticate", { firstName, lastName, id });
+			socket.emit("authenticate", { firstName, lastName, id });
+
+			return () => {
+				socket.disconnect();
+				console.log("We disconnedted");
+			};
+		});
 	}, [firstName, lastName, id]);
 
 	const sendMessages = () => {};

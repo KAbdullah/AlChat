@@ -1,5 +1,7 @@
 import httpServer from "../app.js";
 import { Server } from "socket.io";
+import jwt from "jsonwebtoken";
+import cookie from "cookie";
 
 const io = new Server(httpServer, {
 	cors: {
@@ -13,15 +15,12 @@ const chatNameSpace = io.of("/chat");
 
 chatNameSpace.on("connection", (socket) => {
 	console.log("A user connected", socket.id);
+	// console.log(io.of("/chat").sockets.size); check number of people
+	console.log(socket.handshake.headers.cookie);
 
-	socket.on("authenticate", ({ firstName, lastName, id }) => {
-		socket.user = {
-			id: id,
-			firstName: firstName,
-			lastName: lastName,
-		};
-		console.log(socket.user);
-	});
+	const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+
+	// const user = jwt.verify;
 
 	socket.on("join_room", (roomId) => {
 		socket.join(roomId);
@@ -43,7 +42,7 @@ chatNameSpace.on("connection", (socket) => {
 	});
 
 	socket.on("disconnect", (reason) => {
-		console.log(reason);
+		console.log("Reason for disconnecting", reason);
 	});
 });
 

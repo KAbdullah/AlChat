@@ -9,6 +9,7 @@ async function getUser(email, password) {
 				emailAddress: email,
 				password: password,
 			},
+			withCredentials: true,
 		});
 		return response.data;
 	} catch (error) {
