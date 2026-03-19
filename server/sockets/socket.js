@@ -2,6 +2,7 @@ import httpServer from "../app.js";
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
+import User from "../models/userModel.js";
 
 const io = new Server(httpServer, {
 	cors: {
@@ -13,14 +14,17 @@ const io = new Server(httpServer, {
 
 const chatNameSpace = io.of("/chat");
 
-chatNameSpace.on("connection", (socket) => {
-	console.log("A user connected", socket.id);
+chatNameSpace.on("connection", async (socket) => {
+	// console.log("A user connected", socket.id);
 	// console.log(io.of("/chat").sockets.size); check number of people
-	console.log(socket.handshake.headers.cookie);
 
 	const cookies = cookie.parse(socket.handshake.headers.cookie || "");
 
-	// const user = jwt.verify;
+	const userId = jwt.verify(cookies["jwt"], process.env.JWT_SECRET);
+
+	const user = await User.findById(userId["id"]);
+
+	// socket.user.
 
 	socket.on("join_room", (roomId) => {
 		socket.join(roomId);

@@ -17,15 +17,12 @@ function ChatWindow() {
 		socket.on("connect", () => {
 			console.log(socket.id);
 			console.log(socket.connected);
-
-			socket.emit("authenticate", { firstName, lastName, id });
-
-			return () => {
-				socket.disconnect();
-				console.log("We disconnedted");
-			};
 		});
-	}, [firstName, lastName, id]);
+		return () => {
+			socket.disconnect();
+			console.log("We disconnedted");
+		};
+	}, []);
 
 	const sendMessages = () => {};
 
