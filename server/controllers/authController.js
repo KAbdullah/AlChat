@@ -34,6 +34,7 @@ export const signup = async (req, res, next) => {
 		lastName: req.body.lastName,
 		emailAddress: req.body.emailAddress,
 		password: req.body.password,
+		userName: req.body.userName,
 	});
 
 	createSendToken(newUser, 201, req, res);

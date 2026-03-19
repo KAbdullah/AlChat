@@ -24,7 +24,13 @@ chatNameSpace.on("connection", async (socket) => {
 
 	const user = await User.findById(userId["id"]);
 
-	// socket.user.
+	socket.user = {
+		id: userId["id"],
+		firstname: user["firstName"],
+		lastname: user["lastName"],
+		email: user["emailAddress"],
+		username: user["userName"],
+	};
 
 	socket.on("join_room", (roomId) => {
 		socket.join(roomId);
