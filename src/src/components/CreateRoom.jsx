@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { v6 as uuidv6 } from "uuid";
+import { useQuery } from "@tanstack/react-query";
+import getAllUsers from "../api/users";
 
 function CreateRoom() {
 	const [showModal, setShowModal] = useState(false);
@@ -19,6 +21,7 @@ function CreateRoom() {
 
 function CreateRoomModal({ showModal, setShowModal }) {
 	const modalRef = useRef(null);
+	const result = useQuery({ queryKey: ["users"], queryFn: getAllUsers });
 
 	useEffect(() => {
 		if (showModal) {
@@ -30,6 +33,14 @@ function CreateRoomModal({ showModal, setShowModal }) {
 
 	return (
 		<dialog ref={modalRef}>
+			<ul>
+				{result.status === "success" &&
+					result.data.users.map((user) => (
+						<li key={user._id}>
+							<button>{user.userName}</button>
+						</li>
+					))}
+			</ul>
 			<button onClick={() => setShowModal(!showModal)}> X</button>
 		</dialog>
 	);
