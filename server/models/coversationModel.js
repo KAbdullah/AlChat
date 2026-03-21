@@ -14,6 +14,7 @@ const conversationSchema = Schema(
 		roomId: {
 			type: "String",
 			required: [true, "A coversation needs to have a roomId"],
+			unique: true,
 		},
 	},
 	{
