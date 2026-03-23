@@ -13,7 +13,7 @@ const messagesSchema = new mongoose.Schema(
 		},
 		conversation: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
+			ref: "Conversation",
 			required: [true, "Message must belong to a conversation."],
 		},
 	},
