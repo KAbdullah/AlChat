@@ -16,15 +16,12 @@ export const getConversations = async (req, res, next) => {
 };
 
 export const createConversation = async (req, res, next) => {
-	const participantsIds = req.body.ids;
+	const { usernames, roomId } = req.body;
 
-	// let group = [];
-
-	// participantsIds.array.forEach((participantId) => {
-	// 	group.push(participantId);
-	// });
-
-	const data = await Conversation.create({ participants: participantsIds });
+	const data = await Conversation.create({
+		participants: usernames,
+		roomId: roomId,
+	});
 
 	res.status(200).json({
 		message: "Successful",

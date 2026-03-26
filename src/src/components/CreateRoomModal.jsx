@@ -7,7 +7,7 @@ import { v6 as uuidv6 } from "uuid";
 function CreateRoomModal({ showModal, setShowModal }) {
 	const modalRef = useRef(null);
 	const result = useQuery({ queryKey: ["users"], queryFn: getAllUsers });
-	const [username, setUsername] = useState([]);
+	const [usernames, setUsernames] = useState([]);
 	const [error, setError] = useState();
 	const roomId = uuidv6();
 	// The plan is, once the people have been added to the username array
@@ -21,7 +21,7 @@ function CreateRoomModal({ showModal, setShowModal }) {
 	// backend to the backend to get the users and then add them to the room.
 
 	const mutation = useMutation({
-		mutationFn: ({ username, roomId }) => createRoom({ username, roomId }),
+		mutationFn: ({ usernames, roomId }) => createRoom({ usernames, roomId }),
 	});
 
 	useEffect(() => {
@@ -32,20 +32,20 @@ function CreateRoomModal({ showModal, setShowModal }) {
 		}
 	}, [showModal]);
 
-	const handleAddingUser = (e) => {
+	const handleAddingUser = (Id) => {
 		setError();
-		if (!username.includes(e.target.textContent)) {
-			setUsername((prev) => [...prev, e.target.textContent]);
+		if (!usernames.includes(Id)) {
+			setUsernames((prev) => [...prev, Id]);
 		}
 	};
 
 	const handleRoomCreation = (e) => {
 		e.preventDefault();
-		if (username.length < 2) {
+		if (usernames.length < 2) {
 			setError("There must a minimum of two people in a group.");
 			return;
 		}
-		mutation.mutate({ username, roomId });
+		mutation.mutate({ usernames, roomId });
 	};
 
 	return (
@@ -56,7 +56,9 @@ function CreateRoomModal({ showModal, setShowModal }) {
 				{result.status === "success" &&
 					result.data.users.map((user) => (
 						<li key={user._id}>
-							<button onClick={handleAddingUser}>{user.userName}</button>
+							<button onClick={() => handleAddingUser(user._id)}>
+								{user.userName}
+							</button>
 						</li>
 					))}
 			</ul>
