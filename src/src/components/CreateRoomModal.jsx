@@ -9,7 +9,7 @@ function CreateRoomModal({ showModal, setShowModal }) {
 	const result = useQuery({ queryKey: ["users"], queryFn: getAllUsers });
 	const [usernames, setUsernames] = useState([]);
 	const [error, setError] = useState();
-	const roomId = uuidv6();
+	const [roomId] = useState(uuidv6());
 	// The plan is, once the people have been added to the username array
 	// and the create room button has been clicked, useMutation will use axios
 	// to make a call to add users into conversationModel.

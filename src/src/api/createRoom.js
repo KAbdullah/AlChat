@@ -2,6 +2,7 @@ import axios from "axios";
 
 async function createRoom({ usernames, roomId }) {
 	// Using axios call to make a room between those two users
+	console.log(usernames, roomId);
 	try {
 		const response = axios({
 			method: "post",
