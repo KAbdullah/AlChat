@@ -3,25 +3,32 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import getAllUsers from "../api/users";
 import createRoom from "../api/createRoom";
 import { v6 as uuidv6 } from "uuid";
+import { useDispatch } from "react-redux";
+import { setCurrentRoomId } from "../store/appPageSlice";
 
 function CreateRoomModal({ showModal, setShowModal }) {
 	const modalRef = useRef(null);
 	const result = useQuery({ queryKey: ["users"], queryFn: getAllUsers });
 	const [usernames, setUsernames] = useState([]);
 	const [error, setError] = useState();
-	const [roomId] = useState(uuidv6());
-	// The plan is, once the people have been added to the username array
-	// and the create room button has been clicked, useMutation will use axios
-	// to make a call to add users into conversationModel.
-	// useMutation to get loading state so modal doesn't close until successful
-	// then this room will showup on the side bar, and when you click on it
-	// you open the room and the socket.io-client makes a request to the backend
-	// creating a room and adding users to that room. How do we get the roomId and usernameIds?
-	// We send the roomId through the socket.io frontend, and then we make a request from the
-	// backend to the backend to get the users and then add them to the room.
+	const [roomId, setRoomId] = useState(uuidv6());
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (showModal) {
+			setRoomId(uuidv6());
+		}
+	}, [showModal]);
 
 	const mutation = useMutation({
 		mutationFn: ({ usernames, roomId }) => createRoom({ usernames, roomId }),
+
+		onSuccess: (data, variables, context) => {
+			//1) Basically open the chat window
+			dispatch(setCurrentRoomId(roomId));
+			//2) Close the modal
+			modalRef.current?.close();
+		},
 	});
 
 	useEffect(() => {

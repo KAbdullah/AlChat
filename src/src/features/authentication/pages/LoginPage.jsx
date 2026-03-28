@@ -4,7 +4,7 @@ import getUser from "../services/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../../userSlice";
+import { setUserInfo } from "../../../store/userSlice";
 
 function LoginPage() {
 	const [email, setEmail] = useState("");
