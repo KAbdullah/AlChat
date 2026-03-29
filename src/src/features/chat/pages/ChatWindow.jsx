@@ -9,6 +9,8 @@ import socket from "../../socket.jsx";
 function ChatWindow({ roomId }) {
 	// Will have a use state hook here to update the messages array
 	const [message, setMessage] = useState("");
+	const currentUserName = useSelector((state) => state.user.userName);
+	console.log(currentUserName);
 
 	useEffect(() => {
 		socket.connect();
@@ -18,21 +20,21 @@ function ChatWindow({ roomId }) {
 		});
 		socket.emit("join_room", roomId);
 		socket.on("joined_user", (data) => {
-			console.log("This person:" + data.username + " joined the room.");
+			console.log("This person:" + data.userName + " joined the room.");
 		});
 
-		socket.on("receive_message", (data) => {
-			console.log(data);
+		socket.on("receive_message", ({ roomId, message, currentUserName }) => {
+			console.log(currentUserName, message, roomId);
 		});
 
 		return () => {
 			socket.disconnect();
 			console.log("We disconnedted");
 		};
-	}, [roomId, socket]);
+	}, [roomId]);
 
 	const sendMessages = () => {
-		socket.emit("send_message", { roomId, message });
+		socket.emit("send_message", { roomId, message, currentUserName });
 	};
 
 	return (

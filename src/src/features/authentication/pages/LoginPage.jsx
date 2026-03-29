@@ -19,7 +19,13 @@ function LoginPage() {
 		onSuccess: (data) => {
 			//Exposes cookie unnecessarily
 			// localStorage.setItem("userToken", data.token);
+			const { emailAddress, firstName, lastName, userName, _id } =
+				data.data.user;
+			dispatch(
+				setUserInfo({ firstName, lastName, emailAddress, _id, userName }),
+			);
 			navigate("/app");
+
 			//The backend gets the token with each request in the header,
 			//this unnecessarily exposes the cookie in the front-end to potential hackers
 			// dispatch(

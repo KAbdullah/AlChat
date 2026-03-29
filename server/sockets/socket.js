@@ -26,26 +26,26 @@ chatNameSpace.on("connection", async (socket) => {
 
 	socket.user = {
 		id: userId["id"],
-		firstname: user["firstName"],
-		lastname: user["lastName"],
+		firstName: user["firstName"],
+		lastName: user["lastName"],
 		email: user["emailAddress"],
-		username: user["userName"],
+		userName: user["userName"],
 	};
 
 	socket.on("join_room", (roomId) => {
 		console.log("Joined room", roomId);
 		socket.join(roomId);
-		socket.in(roomId).emit("joined_user", {
-			username: socket.user?.firstName,
+		socket.to(roomId).emit("joined_user", {
+			userName: socket.user?.userName,
 		});
 	});
 
-	socket.on("send_message", ({ roomId, message }) => {
-		console.log(roomId, message);
-		socket.in(roomId).emit("receive_message", {
-			message,
-			username: socket.user?.firstName,
+	socket.on("send_message", ({ roomId, message, currentUserName }) => {
+		console.log(roomId, message, currentUserName);
+		chatNameSpace.to(roomId).emit("receive_message", {
 			roomId,
+			message,
+			currentUserName,
 		});
 	});
 
