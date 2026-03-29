@@ -1,18 +1,24 @@
-.header {
-	width: 100%;
+.chatWindow {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.chatWindow .header {
 	height: 50px;
-	text-align: center;
+	flex-shrink: 0;
+	width: 500px;
 }
 
-.main {
-	height: 500px;
+.chatWindow .main {
+	flex: 1;
+	overflow-y: auto;
 }
 
-.icons {
-	list-style: none;
-}
-
-.icon {
-	display: inline-block;
-	padding: 10px;
+.chatWindow .inputArea {
+	height: 50px;
+	flex-shrink: 0;
 }

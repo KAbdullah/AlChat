@@ -1,0 +1,18 @@
+/* AppPage.css */
+.appContainer {
+	display: flex;
+	height: 100vh;
+}
+
+.roomsSection {
+	flex: 1;
+	border-right: 1px solid #ccc;
+	padding: 20px;
+	overflow-y: auto;
+}
+
+.chatSection {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import ShowRooms from "../components/createRoom";
 import ChatWindow from "../features/chat/pages/ChatWindow";
 import { useSelector } from "react-redux";
+import styles from "./AppPage.module.css";
 
 function AppPage() {
 	const roomId = useSelector((state) => state.appPage.currentRoomId);
@@ -14,10 +15,13 @@ function AppPage() {
 	}, [roomId]);
 
 	return (
-		<div>
-			<h1>Hello there.</h1>
-			<ShowRooms />
-			<ChatWindow />
+		<div className={styles.appContainer}>
+			<div className={styles.roomsSection}>
+				<ShowRooms />
+			</div>
+			<div className={styles.chatSession}>
+				{roomId ? <ChatWindow roomId={roomId} /> : null}
+			</div>
 		</div>
 	);
 }

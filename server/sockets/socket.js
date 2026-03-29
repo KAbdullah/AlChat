@@ -33,6 +33,7 @@ chatNameSpace.on("connection", async (socket) => {
 	};
 
 	socket.on("join_room", (roomId) => {
+		console.log("Joined room", roomId);
 		socket.join(roomId);
 		socket.in(roomId).emit("joined_user", {
 			username: socket.user?.firstName,
@@ -40,6 +41,7 @@ chatNameSpace.on("connection", async (socket) => {
 	});
 
 	socket.on("send_message", ({ roomId, message }) => {
+		console.log(roomId, message);
 		socket.in(roomId).emit("receive_message", {
 			message,
 			username: socket.user?.firstName,

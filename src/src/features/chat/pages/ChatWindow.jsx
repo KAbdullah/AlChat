@@ -6,11 +6,9 @@ import socket from "../../socket.jsx";
 
 //withCredentials required to send cookies
 
-function ChatWindow() {
+function ChatWindow({ roomId }) {
 	// Will have a use state hook here to update the messages array
-	const [windowMessages, setWindowMessages] = useState([]);
-
-	const { firstName, lastName, id } = useSelector((store) => store.user);
+	const [message, setMessage] = useState("");
 
 	useEffect(() => {
 		socket.connect();
@@ -18,16 +16,27 @@ function ChatWindow() {
 			console.log(socket.id);
 			console.log(socket.connected);
 		});
+		socket.emit("join_room", roomId);
+		socket.on("joined_user", (data) => {
+			console.log("This person:" + data.username + " joined the room.");
+		});
+
+		socket.on("receive_message", (data) => {
+			console.log(data);
+		});
+
 		return () => {
 			socket.disconnect();
 			console.log("We disconnedted");
 		};
-	}, []);
+	}, [roomId, socket]);
 
-	const sendMessages = () => {};
+	const sendMessages = () => {
+		socket.emit("send_message", { roomId, message });
+	};
 
 	return (
-		<div>
+		<div className={styles.chatWindow}>
 			<div className={styles.header}>
 				<ul className={styles.icons}>
 					<li className={styles.icon}>
@@ -41,9 +50,13 @@ function ChatWindow() {
 					</li>
 				</ul>
 			</div>
-			<div>The messages will show here</div>
-			<div>
-				<input type="text"></input>
+			<div className={styles.main}>The messages will show here</div>
+			<div className={styles.inputArea}>
+				<input
+					type="text"
+					value={message}
+					onChange={(e) => setMessage(e.target.value)}
+				></input>
 				<button onClick={sendMessages}>Send</button>
 			</div>
 		</div>

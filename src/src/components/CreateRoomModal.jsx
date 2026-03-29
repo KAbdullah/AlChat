@@ -5,6 +5,7 @@ import createRoom from "../api/createRoom";
 import { v6 as uuidv6 } from "uuid";
 import { useDispatch } from "react-redux";
 import { setCurrentRoomId } from "../store/appPageSlice";
+import styles from "./CreateRoomModal.module.css";
 
 function CreateRoomModal({ showModal, setShowModal }) {
 	const modalRef = useRef(null);
@@ -56,7 +57,7 @@ function CreateRoomModal({ showModal, setShowModal }) {
 	};
 
 	return (
-		<dialog ref={modalRef}>
+		<dialog ref={modalRef} className={styles.dialog}>
 			{/* <input type="text" /> search bar when users are vast for the app.
       Maybe I'll come up with something better later on.*/}
 			<ul>
