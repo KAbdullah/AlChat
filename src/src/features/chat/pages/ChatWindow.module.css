@@ -1,24 +1,73 @@
+/*This CSS is all AI so I can see my logic much better, I will delete this later,
+when I start designing this project.*/
+
 .chatWindow {
-	flex: 1;
 	display: flex;
 	flex-direction: column;
 	border: 1px solid #ccc;
 	border-radius: 8px;
+	width: 500px; /* define width */
+	height: 600px; /* define height for full layout */
 	overflow: hidden;
 }
 
-.chatWindow .header {
+.header {
 	height: 50px;
 	flex-shrink: 0;
-	width: 500px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	padding: 0 10px;
+	border-bottom: 1px solid #ccc;
 }
 
-.chatWindow .main {
+.messages {
+	flex: 1; /* take up remaining space */
+	display: flex;
+	flex-direction: column; /* stack messages top-to-bottom */
+	gap: 5px;
+	overflow-y: auto; /* scroll if too many messages */
+	padding: 10px;
+	background-color: #f9f9f9;
+}
+
+.main {
+	/* each message box */
+	padding: 8px 12px;
+	background-color: #e0e0e0;
+	border-radius: 5px;
+	align-self: flex-start; /* messages start on the left */
+	max-width: 70%; /* limit width of message bubble */
+	word-wrap: break-word;
+}
+
+.inputArea {
+	height: 50px;
+	flex-shrink: 0;
+	display: flex;
+	gap: 10px;
+	border-top: 1px solid #ccc;
+	padding: 0 10px;
+	align-items: center;
+	background-color: #fff;
+}
+
+input[type="text"] {
 	flex: 1;
-	overflow-y: auto;
+	padding: 8px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
 }
 
-.chatWindow .inputArea {
-	height: 50px;
-	flex-shrink: 0;
+button {
+	padding: 8px 12px;
+	border-radius: 5px;
+	border: none;
+	background-color: #007bff;
+	color: #fff;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #0056b3;
 }

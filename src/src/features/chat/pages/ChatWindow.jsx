@@ -2,6 +2,8 @@ import styles from "./ChatWindow.module.css";
 import { TbVideo, TbPhone, TbDotsVertical } from "react-icons/tb";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+//This pattern of importing enforces the singleton pattern which avoid
+//memory leaks but only creating one socket.io connection
 import socket from "../../socket.jsx";
 
 //withCredentials required to send cookies
@@ -10,7 +12,7 @@ function ChatWindow({ roomId }) {
 	// Will have a use state hook here to update the messages array
 	const [message, setMessage] = useState("");
 	const currentUserName = useSelector((state) => state.user.userName);
-	console.log(currentUserName);
+	const [allMessages, setAllMessages] = useState([]);
 
 	useEffect(() => {
 		socket.connect();
@@ -23,18 +25,26 @@ function ChatWindow({ roomId }) {
 			console.log("This person:" + data.userName + " joined the room.");
 		});
 
-		socket.on("receive_message", ({ roomId, message, currentUserName }) => {
-			console.log(currentUserName, message, roomId);
-		});
+		const handleReceiveMessage = ({ roomId, message, currentUserName }) => {
+			setAllMessages((prev) => [...prev, message]);
+		};
+
+		socket.on("receive_message", handleReceiveMessage);
 
 		return () => {
-			socket.disconnect();
-			console.log("We disconnedted");
+			//Once we re-render, we must turn off the all previous socket
+			//event listeners.
+			// socket.off("receive_message", handleReceiveMessage);
+			// socket.off("joined_user");
+			socket.off();
+			console.log("Cleaned up listeners");
 		};
 	}, [roomId]);
 
 	const sendMessages = () => {
 		socket.emit("send_message", { roomId, message, currentUserName });
+		setAllMessages((prev) => [...prev, message]);
+		setMessage("");
 	};
 
 	return (
@@ -52,10 +62,20 @@ function ChatWindow({ roomId }) {
 					</li>
 				</ul>
 			</div>
-			<div className={styles.main}>The messages will show here</div>
+			<div className={styles.messages}>
+				{allMessages.map((currMessage, index) => {
+					return (
+						<div key={index} className={styles.main}>
+							{currMessage}
+						</div>
+					);
+				})}
+			</div>
+
 			<div className={styles.inputArea}>
 				<input
 					type="text"
+					id="#messageInput"
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
 				></input>

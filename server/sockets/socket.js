@@ -42,7 +42,7 @@ chatNameSpace.on("connection", async (socket) => {
 
 	socket.on("send_message", ({ roomId, message, currentUserName }) => {
 		console.log(roomId, message, currentUserName);
-		chatNameSpace.to(roomId).emit("receive_message", {
+		socket.broadcast.to(roomId).emit("receive_message", {
 			roomId,
 			message,
 			currentUserName,

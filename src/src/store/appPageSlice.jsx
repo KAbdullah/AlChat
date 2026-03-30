@@ -14,8 +14,11 @@ const store = createSlice({
 			state.currentRoomId = action.payload;
 		},
 
+		setCurrentRoomMessages: (state, action) => {
+			state.currentRoomMessages = action.payload;
+		},
+
 		// for future reference
-		// setCurrentRoomMessages: () => {},
 
 		// addMessageToCurrentRoom: () => {},
 
