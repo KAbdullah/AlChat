@@ -45,7 +45,7 @@ chatNameSpace.on("connection", async (socket) => {
 		socket.broadcast.to(roomId).emit("receive_message", {
 			roomId,
 			message,
-			currentUserName,
+			sendingUserName: currentUserName,
 		});
 	});
 

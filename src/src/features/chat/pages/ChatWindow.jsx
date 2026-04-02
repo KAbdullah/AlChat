@@ -25,8 +25,11 @@ function ChatWindow({ roomId }) {
 			console.log("This person:" + data.userName + " joined the room.");
 		});
 
-		const handleReceiveMessage = ({ roomId, message, currentUserName }) => {
-			setAllMessages((prev) => [...prev, message]);
+		const handleReceiveMessage = ({ roomId, message, sendingUserName }) => {
+			setAllMessages((prev) => [
+				...prev,
+				{ senderId: sendingUserName, message: message, conversation: roomId },
+			]);
 		};
 
 		socket.on("receive_message", handleReceiveMessage);
@@ -36,14 +39,18 @@ function ChatWindow({ roomId }) {
 			//event listeners.
 			// socket.off("receive_message", handleReceiveMessage);
 			// socket.off("joined_user");
-			socket.off();
+			socket.off("receive_message", handleReceiveMessage);
+			socket.off("joined_user");
 			console.log("Cleaned up listeners");
 		};
 	}, [roomId]);
 
 	const sendMessages = () => {
 		socket.emit("send_message", { roomId, message, currentUserName });
-		setAllMessages((prev) => [...prev, message]);
+		setAllMessages((prev) => [
+			...prev,
+			{ senderId: currentUserName, message: message, conversation: roomId },
+		]);
 		setMessage("");
 	};
 
@@ -65,8 +72,13 @@ function ChatWindow({ roomId }) {
 			<div className={styles.messages}>
 				{allMessages.map((currMessage, index) => {
 					return (
-						<div key={index} className={styles.main}>
-							{currMessage}
+						<div key={index}>
+							{currMessage.senderId == currentUserName ? null : (
+								<h3>{currMessage.senderId}</h3>
+							)}
+							<div key={index} className={styles.main}>
+								{currMessage.message}
+							</div>
 						</div>
 					);
 				})}
