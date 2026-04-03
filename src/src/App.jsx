@@ -8,7 +8,8 @@ import ChatWindow from "./features/chat/pages/ChatWindow";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./features/authentication/pages/LoginPage";
 import AppPage from "./pages/AppPage";
-import store from "./store";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./store";
 
 const router = createBrowserRouter([
 	{
@@ -30,10 +31,12 @@ const queryClient = new QueryClient();
 function App() {
 	return (
 		<Provider store={store}>
-			<QueryClientProvider client={queryClient}>
-				{/* <ReactQueryDevtools initialIsOpen={true} /> */}
-				<RouterProvider router={router} />
-			</QueryClientProvider>
+			<PersistGate laoding={null} persistor={persistor}>
+				<QueryClientProvider client={queryClient}>
+					{/* <ReactQueryDevtools initialIsOpen={true} /> */}
+					<RouterProvider router={router} />
+				</QueryClientProvider>
+			</PersistGate>
 		</Provider>
 	);
 }
