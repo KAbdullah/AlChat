@@ -5,7 +5,8 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "@reduxjs/toolkit";
 
-//Later on when we want to blacklist any state from being persisted
+//Later on when we want to blacklist any state that we don't want
+// to expose from being persisted
 // const userPersistConfig = {
 // 	key: "user",
 // 	storage: storage,

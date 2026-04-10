@@ -40,14 +40,18 @@ chatNameSpace.on("connection", async (socket) => {
 		});
 	});
 
-	socket.on("send_message", ({ roomId, message, currentUserName }) => {
-		console.log(roomId, message, currentUserName);
-		socket.broadcast.to(roomId).emit("receive_message", {
-			roomId,
-			message,
-			sendingUserName: currentUserName,
-		});
-	});
+	socket.on(
+		"send_message",
+		({ roomId, message, currentUserName, timeStamp }) => {
+			console.log(roomId, message, currentUserName, timeStamp);
+			socket.broadcast.to(roomId).emit("receive_message", {
+				roomId,
+				message,
+				sendingUserName: currentUserName,
+				timeStamp: timeStamp,
+			});
+		},
+	);
 
 	socket.on("leave_room", (roomId) => {
 		socket.leave(roomId);

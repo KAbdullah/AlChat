@@ -20,7 +20,7 @@ const store = createSlice({
 
 		// for future reference
 
-		// addMessageToCurrentRoom: () => {},
+		addCurrentRoomMessages: (state, action) => {},
 
 		// setLastMessages: () => {},
 	},

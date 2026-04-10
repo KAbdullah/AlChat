@@ -1,5 +1,5 @@
 import styles from "./ChatWindow.module.css";
-import { TbVideo, TbPhone, TbDotsVertical } from "react-icons/tb";
+// import { TbVideo, TbPhone, TbDotsVertical } from "react-icons/tb";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 //This pattern of importing enforces the singleton pattern which avoid
@@ -25,10 +25,20 @@ function ChatWindow({ roomId }) {
 			console.log("This person:" + data.userName + " joined the room.");
 		});
 
-		const handleReceiveMessage = ({ roomId, message, sendingUserName }) => {
+		const handleReceiveMessage = ({
+			roomId,
+			message,
+			sendingUserName,
+			timeStamp,
+		}) => {
 			setAllMessages((prev) => [
 				...prev,
-				{ senderId: sendingUserName, message: message, conversation: roomId },
+				{
+					senderId: sendingUserName,
+					message: message,
+					conversation: roomId,
+					timeStamp: timeStamp,
+				},
 			]);
 		};
 
@@ -46,38 +56,71 @@ function ChatWindow({ roomId }) {
 	}, [roomId]);
 
 	const sendMessages = () => {
-		socket.emit("send_message", { roomId, message, currentUserName });
+		const currDateAndTime = Date.now();
+		socket.emit("send_message", {
+			roomId,
+			message,
+			currentUserName,
+			timeStamp: currDateAndTime,
+		});
 		setAllMessages((prev) => [
 			...prev,
-			{ senderId: currentUserName, message: message, conversation: roomId },
+			{
+				senderId: currentUserName,
+				message: message,
+				conversation: roomId,
+				timeStamp: currDateAndTime,
+			},
 		]);
 		setMessage("");
+	};
+
+	function formatTime(timeStamp) {
+		return timeStamp;
+	}
+
+	const handleEnter = (e) => {
+		if (e.key === "Enter") {
+			sendMessages();
+		}
 	};
 
 	return (
 		<div className={styles.chatWindow}>
 			<div className={styles.header}>
 				<ul className={styles.icons}>
-					<li className={styles.icon}>
-						<TbVideo />
-					</li>
-					<li className={styles.icon}>
-						<TbPhone />
-					</li>
-					<li className={styles.icon}>
-						<TbDotsVertical />
-					</li>
+					<li className={styles.icon}>📹</li>
+					<li className={styles.icon}>📞</li>
+					<li className={styles.icon}>⋮</li>
 				</ul>
 			</div>
 			<div className={styles.messages}>
 				{allMessages.map((currMessage, index) => {
 					return (
-						<div key={index}>
-							{currMessage.senderId == currentUserName ? null : (
-								<h3>{currMessage.senderId}</h3>
+						<div
+							key={index}
+							className={`${styles.messageWrapper} ${
+								currMessage.senderId === currentUserName
+									? styles.selfWrapper
+									: styles.otherWrapper
+							}`}
+						>
+							{currMessage.senderId !== currentUserName && (
+								<h3 className={styles.senderName}>{currMessage.senderId}</h3>
 							)}
-							<div key={index} className={styles.main}>
+
+							<div
+								className={` ${styles.bubble} ${
+									currMessage.senderId === currentUserName
+										? styles.selfBubble
+										: styles.otherBubble
+								}`}
+							>
 								{currMessage.message}
+							</div>
+
+							<div className={styles.timestamp}>
+								{formatTime(currMessage.timeStamp)}
 							</div>
 						</div>
 					);
@@ -89,9 +132,13 @@ function ChatWindow({ roomId }) {
 					type="text"
 					id="#messageInput"
 					value={message}
+					className={styles.messageInputField}
+					onKeyDown={handleEnter}
 					onChange={(e) => setMessage(e.target.value)}
 				></input>
-				<button onClick={sendMessages}>Send</button>
+				<button onClick={sendMessages} className={styles.sendButton}>
+					Send
+				</button>
 			</div>
 		</div>
 	);
