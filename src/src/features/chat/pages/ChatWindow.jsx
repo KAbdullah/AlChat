@@ -7,18 +7,27 @@ import { useSelector } from "react-redux";
 import socket from "../../socket.jsx";
 import { useDispatch } from "react-redux";
 import { setCurrentRoomMessages } from "../../../store/appPageSlice.jsx";
+import { useMutation } from "@tanstack/react-query";
+import saveMessage from "../api/saveMessages.js";
 
 //withCredentials required to send cookies
 
 function ChatWindow({ roomId }) {
 	// Will have a use state hook here to update the messages array
 	const [message, setMessage] = useState("");
-	const currentUserName = useSelector((state) => state.user.userName);
+	const { currentUserName, userId } = useSelector((state) => ({
+		currentUserName: state.user.userName,
+		userId: state.user._id,
+	}));
 	const savedMessages = useSelector(
 		(state) => state.appPage.currentRoomMessages,
 	);
 	const [allMessages, setAllMessages] = useState(savedMessages || []);
 	const dispatch = useDispatch();
+	const mutation = useMutation({
+		mutationFn: ({ senderId, message, conversation }) =>
+			saveMessage(senderId, message, conversation),
+	});
 
 	useEffect(() => {
 		socket.connect();
@@ -31,7 +40,7 @@ function ChatWindow({ roomId }) {
 			console.log("This person:" + data.userName + " joined the room.");
 		});
 
-		const handleReceiveMessage = async ({
+		const handleReceiveMessage = ({
 			roomId,
 			message,
 			sendingUserName,
@@ -53,6 +62,11 @@ function ChatWindow({ roomId }) {
 				dispatch(setCurrentRoomMessages(updatedmessage));
 				return updatedmessage;
 			});
+			mutation.mutate({
+				senderId: userId,
+				message,
+				conversation: roomId,
+			});
 		};
 
 		socket.on("receive_message", handleReceiveMessage);
@@ -68,7 +82,7 @@ function ChatWindow({ roomId }) {
 		};
 	}, [roomId]);
 
-	const sendMessages = async () => {
+	const sendMessages = () => {
 		const currDateAndTime = Date.now();
 		socket.emit("send_message", {
 			roomId,
@@ -87,9 +101,15 @@ function ChatWindow({ roomId }) {
 				},
 			];
 			dispatch(setCurrentRoomMessages(updatedMessage));
+
 			return updatedMessage;
 		});
 		setMessage("");
+		mutation.mutate({
+			senderId: userId,
+			message,
+			conversation: roomId,
+		});
 	};
 
 	function formatTime(timeStamp) {
