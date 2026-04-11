@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 //This pattern of importing enforces the singleton pattern which avoid
 //memory leaks but only creating one socket.io connection
 import socket from "../../socket.jsx";
+import { useDispatch } from "react-redux";
+import { setCurrentRoomMessages } from "../../../store/appPageSlice.jsx";
 
 //withCredentials required to send cookies
 
@@ -12,7 +14,11 @@ function ChatWindow({ roomId }) {
 	// Will have a use state hook here to update the messages array
 	const [message, setMessage] = useState("");
 	const currentUserName = useSelector((state) => state.user.userName);
-	const [allMessages, setAllMessages] = useState([]);
+	const savedMessages = useSelector(
+		(state) => state.appPage.currentRoomMessages,
+	);
+	const [allMessages, setAllMessages] = useState(savedMessages || []);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		socket.connect();
@@ -25,21 +31,28 @@ function ChatWindow({ roomId }) {
 			console.log("This person:" + data.userName + " joined the room.");
 		});
 
-		const handleReceiveMessage = ({
+		const handleReceiveMessage = async ({
 			roomId,
 			message,
 			sendingUserName,
 			timeStamp,
 		}) => {
-			setAllMessages((prev) => [
-				...prev,
-				{
-					senderId: sendingUserName,
-					message: message,
-					conversation: roomId,
-					timeStamp: timeStamp,
-				},
-			]);
+			setAllMessages((prev) => {
+				//This way, we ensure that only the fresh data is being saved via
+				//dispatch. The const block ensures the new data is added.
+				const updatedmessage = [
+					...prev,
+					{
+						senderId: sendingUserName,
+						message: message,
+						conversation: roomId,
+						timeStamp: timeStamp,
+					},
+				];
+
+				dispatch(setCurrentRoomMessages(updatedmessage));
+				return updatedmessage;
+			});
 		};
 
 		socket.on("receive_message", handleReceiveMessage);
@@ -55,7 +68,7 @@ function ChatWindow({ roomId }) {
 		};
 	}, [roomId]);
 
-	const sendMessages = () => {
+	const sendMessages = async () => {
 		const currDateAndTime = Date.now();
 		socket.emit("send_message", {
 			roomId,
@@ -63,15 +76,19 @@ function ChatWindow({ roomId }) {
 			currentUserName,
 			timeStamp: currDateAndTime,
 		});
-		setAllMessages((prev) => [
-			...prev,
-			{
-				senderId: currentUserName,
-				message: message,
-				conversation: roomId,
-				timeStamp: currDateAndTime,
-			},
-		]);
+		setAllMessages((prev) => {
+			const updatedMessage = [
+				...prev,
+				{
+					senderId: currentUserName,
+					message: message,
+					conversation: roomId,
+					timeStamp: currDateAndTime,
+				},
+			];
+			dispatch(setCurrentRoomMessages(updatedMessage));
+			return updatedMessage;
+		});
 		setMessage("");
 	};
 

@@ -20,12 +20,12 @@ const store = createSlice({
 
 		// for future reference
 
-		addCurrentRoomMessages: (state, action) => {},
+		// addCurrentRoomMessages: (state, action) => {},
 
 		// setLastMessages: () => {},
 	},
 });
 
-export const { setCurrentRoomId } = store.actions;
+export const { setCurrentRoomId, setCurrentRoomMessages } = store.actions;
 
 export default store.reducer;
