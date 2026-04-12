@@ -15,10 +15,8 @@ import saveMessage from "../api/saveMessages.js";
 function ChatWindow({ roomId }) {
 	// Will have a use state hook here to update the messages array
 	const [message, setMessage] = useState("");
-	const { currentUserName, userId } = useSelector((state) => ({
-		currentUserName: state.user.userName,
-		userId: state.user._id,
-	}));
+	const currentUserName = useSelector((state) => state.user.userName);
+	const userId = useSelector((state) => state.user._id);
 	const savedMessages = useSelector(
 		(state) => state.appPage.currentRoomMessages,
 	);
@@ -46,27 +44,21 @@ function ChatWindow({ roomId }) {
 			sendingUserName,
 			timeStamp,
 		}) => {
+			const newMessage = {
+				senderId: sendingUserName,
+				message: message,
+				conversation: roomId,
+				timeStamp: timeStamp,
+			};
+
 			setAllMessages((prev) => {
 				//This way, we ensure that only the fresh data is being saved via
 				//dispatch. The const block ensures the new data is added.
-				const updatedmessage = [
-					...prev,
-					{
-						senderId: sendingUserName,
-						message: message,
-						conversation: roomId,
-						timeStamp: timeStamp,
-					},
-				];
-
-				dispatch(setCurrentRoomMessages(updatedmessage));
+				const updatedmessage = [...prev, newMessage];
 				return updatedmessage;
 			});
-			mutation.mutate({
-				senderId: userId,
-				message,
-				conversation: roomId,
-			});
+
+			dispatch(setCurrentRoomMessages((prev) => [...prev, newMessage]));
 		};
 
 		socket.on("receive_message", handleReceiveMessage);
@@ -90,21 +82,21 @@ function ChatWindow({ roomId }) {
 			currentUserName,
 			timeStamp: currDateAndTime,
 		});
-		setAllMessages((prev) => {
-			const updatedMessage = [
-				...prev,
-				{
-					senderId: currentUserName,
-					message: message,
-					conversation: roomId,
-					timeStamp: currDateAndTime,
-				},
-			];
-			dispatch(setCurrentRoomMessages(updatedMessage));
 
+		const newMessage = {
+			senderId: currentUserName,
+			message: message,
+			conversation: roomId,
+			timeStamp: currDateAndTime,
+		};
+		setAllMessages((prev) => {
+			const updatedMessage = [...prev, newMessage];
 			return updatedMessage;
 		});
+
+		dispatch(setCurrentRoomMessages((prev) => [...prev, newMessage]));
 		setMessage("");
+		console.log("MUTATE CALLED");
 		mutation.mutate({
 			senderId: userId,
 			message,
