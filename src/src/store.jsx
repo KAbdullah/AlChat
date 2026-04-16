@@ -1,12 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./store/userSlice";
 import appPageReducer from "./store/appPageSlice";
-import { persistStore, persistReducer } from "redux-persist";
+import {
+	persistStore,
+	persistReducer,
+	FLUSH,
+	REHYDRATE,
+	PAUSE,
+	PERSIST,
+	PURGE,
+	REGISTER,
+} from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "@reduxjs/toolkit";
 
-//Later on when we want to blacklist any state that we don't want
-// to expose from being persisted
 // const userPersistConfig = {
 // 	key: "user",
 // 	storage: storage,
@@ -17,23 +24,35 @@ import { combineReducers } from "@reduxjs/toolkit";
 // 	storage: storage,
 // };
 
-const persistConfig = {
-	key: "root",
+//Created two individual configs so later one we can individually tweak each reducer config,
+// such as when we want to blacklist any state that we don't want, to expose from being persisted,
+// Like the roomId after being refreshed, so the user must click the room again
+
+const userPersistConfig = {
+	key: "user",
 	storage,
 };
 
+const appPagePersistConfig = {
+	key: "appPage",
+	storage,
+	blacklist: ["currentRoomId"],
+};
+
 const rootReducer = combineReducers({
-	user: userReducer,
-	appPage: appPageReducer,
+	user: persistReducer(userPersistConfig, userReducer),
+	appPage: persistReducer(appPagePersistConfig, appPageReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const store = configureStore({
-	reducer: persistedReducer,
+	reducer: rootReducer,
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
-			serializableCheck: false,
+			//redux-persist actions like rehydrate for persistence are sometimes
+			//serizable like so () => {}, so we ignore it if it's action from redux-persist
+			serializableCheck: {
+				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+			},
 		}),
 });
 

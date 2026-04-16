@@ -58,7 +58,7 @@ function ChatWindow({ roomId }) {
 				return updatedmessage;
 			});
 
-			dispatch(setCurrentRoomMessages((prev) => [...prev, newMessage]));
+			dispatch(setCurrentRoomMessages(newMessage));
 		};
 
 		socket.on("receive_message", handleReceiveMessage);
@@ -94,7 +94,7 @@ function ChatWindow({ roomId }) {
 			return updatedMessage;
 		});
 
-		dispatch(setCurrentRoomMessages((prev) => [...prev, newMessage]));
+		dispatch(setCurrentRoomMessages(newMessage));
 		setMessage("");
 		console.log("MUTATE CALLED");
 		mutation.mutate({

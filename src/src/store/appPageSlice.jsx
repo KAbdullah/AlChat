@@ -14,8 +14,10 @@ const store = createSlice({
 			state.currentRoomId = action.payload;
 		},
 
+		// avoids the async-errors when updating messages in the front.
+		// handle the push into the array here, instead of inside the dispatch
 		setCurrentRoomMessages: (state, action) => {
-			state.currentRoomMessages = action.payload;
+			state.currentRoomMessages.push(action.payload);
 		},
 
 		// for future reference
