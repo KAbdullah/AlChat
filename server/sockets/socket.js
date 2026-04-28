@@ -18,19 +18,26 @@ chatNameSpace.on("connection", async (socket) => {
 	// console.log("A user connected", socket.id);
 	// console.log(io.of("/chat").sockets.size); check number of people
 
-	const cookies = cookie.parse(socket.handshake.headers.cookie || "");
+	try {
+		const cookies = cookie.parse(socket.handshake.headers.cookie || "");
 
-	const userId = jwt.verify(cookies["jwt"], process.env.JWT_SECRET);
+		const userId = jwt.verify(cookies["jwt"], process.env.JWT_SECRET);
 
-	const user = await User.findById(userId["id"]);
+		if (!userId) throw new Error("Now user found due to token error.");
 
-	socket.user = {
-		id: userId["id"],
-		firstName: user["firstName"],
-		lastName: user["lastName"],
-		email: user["emailAddress"],
-		userName: user["userName"],
-	};
+		const user = await User.findById(userId["id"]);
+
+		socket.user = {
+			id: userId["id"],
+			firstName: user["firstName"],
+			lastName: user["lastName"],
+			email: user["emailAddress"],
+			userName: user["userName"],
+		};
+	} catch (err) {
+		console.log("Auth Error", err.message);
+		socket.disconnect();
+	}
 
 	socket.on("join_room", (roomId) => {
 		console.log("Joined room", roomId);

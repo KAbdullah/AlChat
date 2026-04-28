@@ -124,36 +124,38 @@ function ChatWindow({ roomId }) {
 				</ul>
 			</div>
 			<div className={styles.messages}>
-				{allMessages.map((currMessage, index) => {
-					return (
-						<div
-							key={index}
-							className={`${styles.messageWrapper} ${
-								currMessage.senderId === currentUserName
-									? styles.selfWrapper
-									: styles.otherWrapper
-							}`}
-						>
-							{currMessage.senderId !== currentUserName && (
-								<h3 className={styles.senderName}>{currMessage.senderId}</h3>
-							)}
-
+				{allMessages
+					.filter((currMessage) => currMessage.conversation == roomId)
+					.map((currMessage, index) => {
+						return (
 							<div
-								className={` ${styles.bubble} ${
+								key={index}
+								className={`${styles.messageWrapper} ${
 									currMessage.senderId === currentUserName
-										? styles.selfBubble
-										: styles.otherBubble
+										? styles.selfWrapper
+										: styles.otherWrapper
 								}`}
 							>
-								{currMessage.message}
-							</div>
+								{currMessage.senderId !== currentUserName && (
+									<h3 className={styles.senderName}>{currMessage.senderId}</h3>
+								)}
 
-							<div className={styles.timestamp}>
-								{formatTime(currMessage.timeStamp)}
+								<div
+									className={` ${styles.bubble} ${
+										currMessage.senderId === currentUserName
+											? styles.selfBubble
+											: styles.otherBubble
+									}`}
+								>
+									{currMessage.message}
+								</div>
+
+								<div className={styles.timestamp}>
+									{formatTime(currMessage.timeStamp)}
+								</div>
 							</div>
-						</div>
-					);
-				})}
+						);
+					})}
 			</div>
 
 			<div className={styles.inputArea}>
