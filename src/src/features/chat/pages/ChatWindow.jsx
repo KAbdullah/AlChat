@@ -20,7 +20,6 @@ function ChatWindow({ roomId }) {
 	const savedMessages = useSelector(
 		(state) => state.appPage.currentRoomMessages,
 	);
-	const [allMessages, setAllMessages] = useState(savedMessages || []);
 	const dispatch = useDispatch();
 	const mutation = useMutation({
 		mutationFn: ({ senderId, message, conversation }) =>
@@ -50,13 +49,6 @@ function ChatWindow({ roomId }) {
 				conversation: roomId,
 				timeStamp: timeStamp,
 			};
-
-			setAllMessages((prev) => {
-				//This way, we ensure that only the fresh data is being saved via
-				//dispatch. The const block ensures the new data is added.
-				const updatedmessage = [...prev, newMessage];
-				return updatedmessage;
-			});
 
 			dispatch(setCurrentRoomMessages(newMessage));
 		};
@@ -89,10 +81,6 @@ function ChatWindow({ roomId }) {
 			conversation: roomId,
 			timeStamp: currDateAndTime,
 		};
-		setAllMessages((prev) => {
-			const updatedMessage = [...prev, newMessage];
-			return updatedMessage;
-		});
 
 		dispatch(setCurrentRoomMessages(newMessage));
 		setMessage("");
@@ -124,7 +112,7 @@ function ChatWindow({ roomId }) {
 				</ul>
 			</div>
 			<div className={styles.messages}>
-				{allMessages
+				{savedMessages
 					.filter((currMessage) => currMessage.conversation == roomId)
 					.map((currMessage, index) => {
 						return (

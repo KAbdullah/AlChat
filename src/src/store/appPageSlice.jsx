@@ -20,6 +20,10 @@ const store = createSlice({
 			state.currentRoomMessages.push(action.payload);
 		},
 
+		// resestPreviousRoomMessages: (state, action) => {
+		// 	state.currentRoomMessages = [];
+		// },
+
 		// for future reference
 
 		// addCurrentRoomMessages: (state, action) => {},
@@ -28,6 +32,10 @@ const store = createSlice({
 	},
 });
 
-export const { setCurrentRoomId, setCurrentRoomMessages } = store.actions;
+export const {
+	setCurrentRoomId,
+	setCurrentRoomMessages,
+	resestPreviousRoomMessages,
+} = store.actions;
 
 export default store.reducer;

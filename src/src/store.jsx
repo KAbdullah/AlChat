@@ -41,7 +41,8 @@ const appPagePersistConfig = {
 
 const rootReducer = combineReducers({
 	user: persistReducer(userPersistConfig, userReducer),
-	appPage: persistReducer(appPagePersistConfig, appPageReducer),
+	// appPage: persistReducer(appPagePersistConfig, appPageReducer),
+	appPage: appPageReducer,
 });
 
 const store = configureStore({

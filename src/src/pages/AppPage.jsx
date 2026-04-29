@@ -1,17 +1,20 @@
 import { useEffect } from "react";
 import ShowRooms from "../components/createRoom";
 import ChatWindow from "../features/chat/pages/ChatWindow";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./AppPage.module.css";
+import { resestPreviousRoomMessages } from "../store/appPageSlice";
 
 function AppPage() {
 	const roomId = useSelector((state) => state.appPage.currentRoomId);
+	const dispatch = useDispatch();
 
 	// Receiving the Room ID now,
 	// I will use this Room ID to basically open a chatWindow anytime we have a
 	// currentRoomId set
 	useEffect(() => {
 		console.log(roomId);
+		// dispatch(resestPreviousRoomMessages());
 	}, [roomId]);
 
 	return (
