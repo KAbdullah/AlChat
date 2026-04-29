@@ -62,6 +62,7 @@ function ChatWindow({ roomId }) {
 			// socket.off("joined_user");
 			socket.off("receive_message", handleReceiveMessage);
 			socket.off("joined_user");
+			socket.emit("leave_room", roomId);
 			console.log("Cleaned up listeners");
 		};
 	}, [roomId]);
