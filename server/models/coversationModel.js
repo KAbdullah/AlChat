@@ -22,6 +22,13 @@ const conversationSchema = Schema(
 	},
 );
 
+// Makes the query
+// Conversation.find({ participants: myId }).sort({ updatedAt: -1 })
+// very fast. This query will be used a lot because when we get the latest
+// active chats in descending order along with their users, this is
+// when it comes in handy
+conversationSchema.index({ participants: 1, updatedAt: -1 });
+
 const Conversation = mongoose.model("Conversation", conversationSchema);
 
 export default Conversation;
