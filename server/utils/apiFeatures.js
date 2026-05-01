@@ -6,7 +6,7 @@ export class APIFeatures {
 
 	cursorPaginate() {
 		//Date.now() gives milliseconds
-		const cursorsTime = this.queryString.timing || Date.now();
+		const cursorsTime = this.queryString.timing * 1 || Date.now();
 
 		const limit = this.queryString.limit * 1 || 10;
 

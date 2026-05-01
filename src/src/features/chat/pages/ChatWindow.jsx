@@ -1,6 +1,6 @@
 import styles from "./ChatWindow.module.css";
 // import { TbVideo, TbPhone, TbDotsVertical } from "react-icons/tb";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 //This pattern of importing enforces the singleton pattern which avoid
 //memory leaks but only creating one socket.io connection
@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentRoomMessages } from "../../../store/appPageSlice.jsx";
 import { useMutation } from "@tanstack/react-query";
 import saveMessage from "../api/saveMessages.js";
+import fetchLastTen from "../api/fetchLastTen.js";
 
 //withCredentials required to send cookies
 
@@ -25,6 +26,13 @@ function ChatWindow({ roomId }) {
 		mutationFn: ({ senderId, message, conversation }) =>
 			saveMessage(senderId, message, conversation),
 	});
+
+	const scrollMutation = useMutation({
+		mutationFn: ({ roomId, lastTimeStamp }) => {
+			return fetchLastTen(roomId, lastTimeStamp);
+		},
+	});
+	const scrollRef = useRef(null);
 
 	useEffect(() => {
 		socket.connect();
@@ -66,6 +74,30 @@ function ChatWindow({ roomId }) {
 			console.log("Cleaned up listeners");
 		};
 	}, [roomId]);
+
+	useEffect(() => {
+		const element = scrollRef.current;
+
+		if (!element) return;
+
+		const handleScroll = async () => {
+			const isAtTop = element.scrollTop === 0;
+			if (isAtTop) {
+				scrollMutation.mutate({
+					roomId,
+					lastTimeStamp: savedMessages[0]["timeStamp"],
+				});
+				console.log(scrollMutation.data.data.data);
+				console.log(savedMessages);
+			}
+		};
+
+		element.addEventListener("scroll", handleScroll);
+
+		return () => {
+			element.removeEventListener("scroll", handleScroll);
+		};
+	}, [scrollRef]);
 
 	const sendMessages = () => {
 		const currDateAndTime = Date.now();
@@ -112,7 +144,7 @@ function ChatWindow({ roomId }) {
 					<li className={styles.icon}>⋮</li>
 				</ul>
 			</div>
-			<div className={styles.messages}>
+			<div ref={scrollRef} className={styles.messages}>
 				{savedMessages
 					.filter((currMessage) => currMessage.conversation == roomId)
 					.map((currMessage, index) => {
