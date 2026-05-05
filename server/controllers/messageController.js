@@ -47,7 +47,10 @@ export const getLastTenMessages = async (req, res) => {
 
 	//We don't need to populate, we can simply refer to the other schema's
 	//attribute if we got a reference to the other schema
-	const query = Messages.find({ conversation: roomId });
+	const query = Messages.find({ conversation: roomId }).populate({
+		path: "senderId",
+		select: "userName",
+	});
 	//Pass active query into APIFeatures class to run cursorPaginate()
 	const features = new APIFeatures(query, req.query).cursorPaginate();
 	//We finally execute the query promise with .query

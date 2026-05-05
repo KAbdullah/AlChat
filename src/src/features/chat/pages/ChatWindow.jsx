@@ -6,7 +6,10 @@ import { useSelector } from "react-redux";
 //memory leaks but only creating one socket.io connection
 import socket from "../../socket.jsx";
 import { useDispatch } from "react-redux";
-import { setCurrentRoomMessages } from "../../../store/appPageSlice.jsx";
+import {
+	setCurrentRoomMessages,
+	setCurrentRoomMessagesReverse,
+} from "../../../store/appPageSlice.jsx";
 import { useMutation } from "@tanstack/react-query";
 import saveMessage from "../api/saveMessages.js";
 import fetchLastTen from "../api/fetchLastTen.js";
@@ -22,6 +25,13 @@ function ChatWindow({ roomId }) {
 		(state) => state.appPage.currentRoomMessages,
 	);
 	const dispatch = useDispatch();
+
+	const savedMessagesRef = useRef(savedMessages);
+
+	useEffect(() => {
+		savedMessagesRef.current = savedMessages;
+	}, [savedMessages]);
+
 	const mutation = useMutation({
 		mutationFn: ({ senderId, message, conversation }) =>
 			saveMessage(senderId, message, conversation),
@@ -29,7 +39,17 @@ function ChatWindow({ roomId }) {
 
 	const scrollMutation = useMutation({
 		mutationFn: ({ roomId, lastTimeStamp }) => {
+			console.log(lastTimeStamp);
 			return fetchLastTen(roomId, lastTimeStamp);
+		},
+		//onSuccess already get's the data
+		onSuccess: (data) => {
+			const fetched = data.data.data;
+			if (!fetched || fetched.length === 0) return;
+			const newData = manageSuccessfulMutation(fetched);
+			dispatch(setCurrentRoomMessagesReverse(newData));
+
+			scrollMutation.reset();
 		},
 	});
 	const scrollRef = useRef(null);
@@ -75,6 +95,29 @@ function ChatWindow({ roomId }) {
 		};
 	}, [roomId]);
 
+	const manageSuccessfulMutation = (data) => {
+		return data.map((message) => ({
+			conversation: message.conversation,
+			message: message.message,
+			senderId: message.senderId.userName,
+			timeStamp: new Date(message.createdAt).getTime(),
+		}));
+	};
+
+	//Add new messages to the current slice when we change rooms, last ten messages
+	useEffect(() => {
+		if (!savedMessages || savedMessages.length === 0) {
+			console.log("Empty message mutation is firing");
+			scrollMutation.mutate({
+				roomId,
+				lastTimeStamp: new Date().getTime(),
+			});
+		}
+	}, [roomId]);
+
+	//Here we only add message to the slice if the savedMessages state changes
+	//If it doesn't then we don't fire any of the actions (besides the event
+	//listener)
 	useEffect(() => {
 		const element = scrollRef.current;
 
@@ -82,13 +125,19 @@ function ChatWindow({ roomId }) {
 
 		const handleScroll = async () => {
 			const isAtTop = element.scrollTop === 0;
+			if (!isAtTop) return;
+			if (scrollMutation.isPending) return;
 			if (isAtTop) {
+				//If current mutation is pending, add this guard so it doesn't
+				//fire again while the first request is pending
+
+				console.log("Scroll bar mutation is firing");
 				scrollMutation.mutate({
 					roomId,
-					lastTimeStamp: savedMessages[0]["timeStamp"],
+					//Did optional chaining so if savedMessages is undefined not,
+					//to proceed with getting the data
+					lastTimeStamp: savedMessagesRef.current?.[0]?.["timeStamp"],
 				});
-				console.log(scrollMutation.data.data.data);
-				console.log(savedMessages);
 			}
 		};
 
@@ -97,7 +146,16 @@ function ChatWindow({ roomId }) {
 		return () => {
 			element.removeEventListener("scroll", handleScroll);
 		};
-	}, [scrollRef]);
+	}, [roomId]);
+
+	// useEffect(() => {
+	// 	if (scrollMutation.isSuccess) {
+	// 		const newData = manageSuccessfulMutation(scrollMutation.data.data.data);
+	// 		dispatch(setCurrentRoomMessagesReverse(newData));
+
+	// 		scrollMutation.reset();
+	// 	}
+	// }, [scrollMutation.isSuccess]);
 
 	const sendMessages = () => {
 		const currDateAndTime = Date.now();

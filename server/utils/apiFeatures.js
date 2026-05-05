@@ -18,6 +18,7 @@ export class APIFeatures {
 		this.query = this.query.sort({ createdAt: -1 });
 
 		this.query = this.query.limit(limit);
+
 		//This returns an instance of the whole class
 		return this;
 	}

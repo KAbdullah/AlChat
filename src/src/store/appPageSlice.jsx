@@ -20,6 +20,13 @@ const store = createSlice({
 			state.currentRoomMessages.push(action.payload);
 		},
 
+		setCurrentRoomMessagesReverse: (state, action) => {
+			state.currentRoomMessages = [
+				...action.payload.reverse(),
+				...state.currentRoomMessages,
+			];
+		},
+
 		// resestPreviousRoomMessages: (state, action) => {
 		// 	state.currentRoomMessages = [];
 		// },
@@ -36,6 +43,7 @@ export const {
 	setCurrentRoomId,
 	setCurrentRoomMessages,
 	resestPreviousRoomMessages,
+	setCurrentRoomMessagesReverse,
 } = store.actions;
 
 export default store.reducer;
